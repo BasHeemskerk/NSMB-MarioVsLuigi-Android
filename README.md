@@ -1,3 +1,5 @@
+NOT PORTED YET!
+
 # NSMB-MarioVsLuigi
 A unity-standalone 2-10 player remake of the Mario vs. Luigi gamemode from the New Super Mario Bros DS download game. 
 
@@ -8,8 +10,6 @@ All power-ups are included and remain faithful to their original counterparts, a
 [**Join the discord**](https://discord.gg/dgKVaUKpj5) to keep up to date with the development of the game, make feature suggestions, report bugs (if you're too lazy to use issues...), get technical support, look for people to play with, and just talk about the game!
 
 ## Download
-
-[Play now in browser on itch.io!](https://ipodtouch0218.itch.io/nsmb-mariovsluigi)
 
 Windows, Linux, and Mac Builds: https://github.com/ipodtouch0218/NSMB-MarioVsLuigi/releases/latest
 
