@@ -69,5 +69,6 @@ An adaptation of [MarioVsLuigi](https://github.com/ipodtouch0218/NSMB-MarioVsLui
 ### All:
 
 - Mark19 (Wark19)
+- BasDEV (mainly fixes and imrpovements)
 
 </details>
