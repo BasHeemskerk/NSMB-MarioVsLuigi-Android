@@ -84,6 +84,8 @@ public class Settings : Singleton<Settings> {
         character = PlayerPrefs.GetInt("Character", 0);
         skin = PlayerPrefs.GetInt("Skin", 0);
 
+        SetFPSGame(FPSGame);
+
         //control customization
         for (int i=0; i < amountOfControls; i++){
             controlSizeMultiplier[i] = PlayerPrefs.GetFloat("control_size_multiplier_" + i); //control_ is general name, 0 is the id of the control
