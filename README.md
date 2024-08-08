@@ -1,6 +1,6 @@
 # Mario Vs Luigi - Mobile Port
 
-An adaptation of [MarioVsLuigi](https://github.com/ipodtouch0218/NSMB-MarioVsLuigi) for mobile phones. This port is a 1:1 adaptation of MvsL for smartphones, i've only changed things that don't give an advantage over other non-mobile players while also making a better experience for the mobile users.
+An adaptation of [MarioVsLuigi](https://github.com/ipodtouch0218/NSMB-MarioVsLuigi) for mobile phones. This port is a 1:1 adaptation of MvsL for smartphones.
 
 ## Main features
 - Being able to connect to the official lobbies.
@@ -8,21 +8,6 @@ An adaptation of [MarioVsLuigi](https://github.com/ipodtouch0218/NSMB-MarioVsLui
 - Chat not being absolutely disfunctional.
 - Compatible from Android 5.1 to Android 14 
 - The ability to disable touch controls at will.
-
-## Planed features for future updates
-- Being able to make Mobile-version-only lobbies.
-
-## Features I won't add 
-This section recopiles the most asked features for the android port that are
-either not possible right now, pointless or not as good of an idea as they seem.
-
-- **D-Pad**: Although the d-pad is the predilected way to play 2d platformers, it sucks at that if it's on a touchscreen, where your fingers cannot feel the shape of it, that's why i won't add the d-pad.
-
-- **Movable/resizeable controls**: If im beeing honest, i don't really want to go through the pain that seems to be doing that just at first glance.
-
-## Other Work In progress projects
-- NSMBW, NSMB2 & NSMBUD Styles.
-- Singleplayer/cooperative mode with new levels and remixes of old ones.
 
 <details>
   <summary><h2>Credits for the base Project</h2></summary>
@@ -85,5 +70,6 @@ either not possible right now, pointless or not as good of an idea as they seem.
 ### All:
 
 - Mark19 (Wark19)
+- BasDEV - For port continuation and enhancements.
 
 </details>
