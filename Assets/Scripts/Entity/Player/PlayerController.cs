@@ -778,11 +778,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         }
         case "coin": {
             photonView.RPC(nameof(AttemptCollectCoin), RpcTarget.AllViaServer, obj.GetPhotonView().ViewID, new Vector2(obj.transform.position.x, collider.transform.position.y));
-            /*if (photonView.IsMine){
-                PlayerPrefs.SetInt("collectedCoins", PlayerPrefs.GetInt("collectedCoins", 0) + 1);
-                PlayerPrefs.Save();
-                Debug.Log("Collected a coin");
-            }*/
             break;
         }
         }
@@ -994,6 +989,46 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             return;
         }*/
 
+        if (photonView.IsMine){
+            //collect the powerup and write to playerprefs
+            if (powerup.prefab == "Mushroom"){
+                PlayerPrefs.SetInt("collectedMushrooms", PlayerPrefs.GetInt("collectedMushrooms", 0) + 1);
+                Debug.Log("Collected a mushroom");
+            }
+            else if (powerup.prefab == "MiniMushroom"){
+                PlayerPrefs.SetInt("collectedMiniMushrooms", PlayerPrefs.GetInt("collectedMiniMushrooms", 0) + 1);
+                Debug.Log("Collected a mini mushroom");
+            }
+            else if (powerup.prefab == "MegaMushroom"){
+                PlayerPrefs.SetInt("collectedMegaMushrooms", PlayerPrefs.GetInt("collectedMegaMushrooms", 0) + 1);
+                Debug.Log("Collected a mega mushroom");
+            }
+            else if (powerup.prefab == "PropellerMushroom"){
+                PlayerPrefs.SetInt("collectedHelicoMushrooms", PlayerPrefs.GetInt("collectedHelicoMushrooms", 0) + 1);
+                Debug.Log("Collected a propeller mushroom");
+            }
+            else if (powerup.prefab == "FireFlower"){
+                PlayerPrefs.SetInt("collectedFireFlowers", PlayerPrefs.GetInt("collectedFireFlowers", 0) + 1);
+                Debug.Log("Collected a fire flower");
+            }
+            else if (powerup.prefab == "IceFlower"){
+                PlayerPrefs.SetInt("collectedIceFlowers", PlayerPrefs.GetInt("collectedIceFlowers", 0) + 1);
+                Debug.Log("Collected an ice flower");
+            }
+            else if (powerup.prefab == "BlueShell"){
+                PlayerPrefs.SetInt("collectedBlueShells", PlayerPrefs.GetInt("collectedBlueShells", 0) + 1);
+                Debug.Log("Collected a blue shell");
+            }
+            else if (powerup.prefab == "Star"){
+                PlayerPrefs.SetInt("collectedStarsPowerups", PlayerPrefs.GetInt("collectedStarsPowerups", 0) + 1);
+                Debug.Log("Collected a star powerup");
+            }
+            PlayerPrefs.Save();
+        }
+        else{
+            Debug.Log("Someone collected a powerup, but it wasn't me. :(");
+        }
+
         if (powerup.state == Enums.PowerupState.MegaMushroom && state != Enums.PowerupState.MegaMushroom) {
 
             giantStartTimer = giantStartTime;
@@ -1012,11 +1047,11 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             PlaySoundEverywhere(powerup.soundEffect);
             soundPlayed = true;
 
-            if (photonView.IsMine){
+            /*if (photonView.IsMine){
                 PlayerPrefs.SetInt("collectedMegaMushrooms", PlayerPrefs.GetInt("collectedMegaMushrooms", 0) + 1);
                 PlayerPrefs.Save();
                 Debug.Log("Collected a mega mushroom");
-            }
+            }*/
 
         } else if (powerup.prefab == "Star") {
             //starman
@@ -1035,11 +1070,11 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 PhotonNetwork.Destroy(view);
             Destroy(view.gameObject);
 
-            if (photonView.IsMine){
+            /*if (photonView.IsMine){
                 PlayerPrefs.SetInt("collectedStarsPowerup", PlayerPrefs.GetInt("collectedStarsPowerup", 0) + 1);
                 PlayerPrefs.Save();
                 Debug.Log("Collected a star powerup");
-            }
+            }*/
 
             return;
         } else if (powerup.prefab == "1-Up") {
@@ -1059,33 +1094,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 reserve = true;
             }
         }
-
-        //collect the powerup and write to playerprefs
-        if (powerup.prefab == "Mushroom"){
-            PlayerPrefs.SetInt("collectedMushrooms", PlayerPrefs.GetInt("collectedMushrooms", 0) + 1);
-        }
-        else if (powerup.prefab == "MiniMushroom"){
-            PlayerPrefs.SetInt("collectedMiniMushrooms", PlayerPrefs.GetInt("collectedMiniMushrooms", 0) + 1);
-        }
-        else if (powerup.prefab == "MegaMushroom"){
-            PlayerPrefs.SetInt("collectedMegaMushrooms", PlayerPrefs.GetInt("collectedMegaMushrooms", 0) + 1);
-        }
-        else if (powerup.prefab == "PropellerMushroom"){
-            PlayerPrefs.SetInt("collectedHelicoMushrooms", PlayerPrefs.GetInt("collectedHelicoMushrooms", 0) + 1);
-        }
-        else if (powerup.prefab == "FireFlower"){
-            PlayerPrefs.SetInt("collectedFireFlowers", PlayerPrefs.GetInt("collectedFireFlowers", 0) + 1);
-        }
-        else if (powerup.prefab == "IceFlower"){
-            PlayerPrefs.SetInt("collectedIceFlowers", PlayerPrefs.GetInt("collectedIceFlowers", 0) + 1);
-        }
-        else if (powerup.prefab == "BlueShell"){
-            PlayerPrefs.SetInt("collectedBlueShells", PlayerPrefs.GetInt("collectedBlueShells", 0) + 1);
-        }
-        else if (powerup.prefab == "Star"){
-            PlayerPrefs.SetInt("collectedStarsPowerup", PlayerPrefs.GetInt("collectedStarsPowerup", 0) + 1);
-        }
-        PlayerPrefs.Save();
 
 
         if (reserve) {
@@ -1317,9 +1325,6 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 //loose coin, just destroy
                 PhotonNetwork.Destroy(coin);
             }
-            PlayerPrefs.SetInt("collectedCoins", PlayerPrefs.GetInt("collectedCoins", 0) + 1);
-            PlayerPrefs.Save();
-            Debug.Log("Collected a coin");
         }
 
         Instantiate(Resources.Load("Prefabs/Particle/CoinCollect"), position, Quaternion.identity);
@@ -1333,6 +1338,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         if (coins >= GameManager.Instance.coinRequirement) {
             SpawnCoinItem();
             coins = 0;
+        }
+
+        if (photonView.IsMine){
+            PlayerPrefs.SetInt("collectedCoins", PlayerPrefs.GetInt("collectedCoins", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("Collected a coin");
         }
 
         UpdateGameState();
@@ -1444,18 +1455,20 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         }
         holdingOld = null;
 
-        if (photonView.IsMine){
+        if (cameraController.IsControllingCamera){
+            if (lastHitPlayer != null){
+                PlayerPrefs.SetFloat("kills", PlayerPrefs.GetFloat("kills", 0) + 1);
+                PlayerPrefs.Save();
+                Debug.Log("Killed a player (atleast, we think so)");
+            }
             ScoreboardUpdater.instance.OnDeathToggle();
             do_vibrate(500);
             PlayerPrefs.SetFloat("deaths", PlayerPrefs.GetFloat("deaths", 0) + 1);
             PlayerPrefs.Save();
             Debug.Log("Died");
         }
-
-        if (lastHitPlayer != null){
-            PlayerPrefs.SetFloat("kills", PlayerPrefs.GetFloat("kills", 0) + 1);
-            PlayerPrefs.Save();
-            Debug.Log("Killed a player (atleast, we think so)");
+        else{
+            Debug.Log("We didnt die, someone else did");
         }
     }
 

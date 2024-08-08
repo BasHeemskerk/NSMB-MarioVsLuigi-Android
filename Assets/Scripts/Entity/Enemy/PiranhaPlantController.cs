@@ -85,11 +85,12 @@ public class PiranhaPlantController : KillableEntity {
         dead = true;
         hitbox.enabled = false;
         Instantiate(Resources.Load("Prefabs/Particle/Puff"), transform.position + new Vector3(0, upsideDown ? -0.5f : 0.5f, 0), Quaternion.identity);
-        if (photonView.IsMine)
+        if (photonView.IsMine){
             PhotonNetwork.Instantiate("Prefabs/LooseCoin", transform.position + new Vector3(0, upsideDown ? -1f : 1f, 0), Quaternion.identity);
             PlayerPrefs.SetInt("killedEnemys", PlayerPrefs.GetInt("killedEnemys", 0) + 1);
             PlayerPrefs.Save();
             Debug.Log("Killed a piranha plant");
+        }
     }
 
     [PunRPC]

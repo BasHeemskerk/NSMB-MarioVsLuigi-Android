@@ -24,8 +24,18 @@ public class GoombaWalk : KillableEntity {
         if (dead) {
             if (deathTimer >= 0 && (photonView?.IsMine ?? true)) {
                 Utils.TickTimer(ref deathTimer, 0, Time.fixedDeltaTime);
-                if (deathTimer == 0)
+                if (deathTimer == 0){
                     PhotonNetwork.Destroy(gameObject);
+                }
+            }
+            
+            if (photonView.IsMine){
+                PlayerPrefs.SetInt("killedEnemys", PlayerPrefs.GetInt("killedEnemys", 0) + 1);
+                PlayerPrefs.Save();
+                Debug.Log("Killed a goomba");
+            }
+            else{
+                Debug.Log("Someone killed a goomba, but not me");
             }
             return;
         }
@@ -48,10 +58,5 @@ public class GoombaWalk : KillableEntity {
         deathTimer = 0.5f;
         hitbox.enabled = false;
         animator.SetBool("dead", true);
-        if (photonView.IsMine){
-            PlayerPrefs.SetInt("killedEnemys", PlayerPrefs.GetInt("killedEnemys", 0) + 1);
-            PlayerPrefs.Save();
-            Debug.Log("Killed a goomba");
-        }
     }
 }
