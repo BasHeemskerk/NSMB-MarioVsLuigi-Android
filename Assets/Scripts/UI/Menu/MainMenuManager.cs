@@ -24,7 +24,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
     public GameObject lobbiesContent, lobbyPrefab;
     bool quit, validName;
     public GameObject connecting;
-    public GameObject title, bg, mainMenu, optionsMenu, lobbyMenu, createLobbyPrompt, inLobbyMenu, creditsMenu, patchesMenu, controlsMenu, privatePrompt, updateBox;
+    public GameObject title, bg, mainMenu, optionsMenu, lobbyMenu, createLobbyPrompt, inLobbyMenu, creditsMenu, patchesMenu, statsMenu, controlsMenu, privatePrompt, updateBox;
     public GameObject[] levelCameraPositions;
     public GameObject sliderText, lobbyText, currentMaxPlayers, settingsPanel;
     public TMP_Dropdown levelDropdown, characterDropdown;
@@ -364,6 +364,20 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
             PhotonNetwork.IsMessageQueueRunning = false;
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
             SceneManager.LoadSceneAsync(level + 2, LoadSceneMode.Additive);
+            if (!GlobalController.Instance.joinedAsSpectator){
+                PlayerPrefs.SetInt("matchesPlayed", (PlayerPrefs.GetInt("matchesPlayed", 0) + 1));
+                if (Settings.Instance.character == 0){
+                    PlayerPrefs.SetInt("playedMario", (PlayerPrefs.GetInt("playedMario", 0) + 1));
+                }
+                else{
+                    PlayerPrefs.SetInt("playedLuigi", (PlayerPrefs.GetInt("playedLuigi", 0) + 1));
+                }
+                PlayerPrefs.Save();
+            }
+            else{
+                Debug.Log("Can't increment matches played because you are spectating");
+                Debug.Log("Can't increment played as Mario or Luigi because you are spectating");
+            }
             break;
         }
         case (byte) Enums.NetEventIds.PlayerChatMessage: {
@@ -454,6 +468,13 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
             Match match = Regex.Match(Application.version, "^\\w*\\.\\w*\\.\\w*");
 
             PhotonNetwork.NetworkingClient.AppVersion = match.Groups[0].Value;
+
+            if (globalServerToggle.isOn){
+                PhotonNetwork.NetworkingClient.AppVersion = match.Groups[0].Value + "-official";
+            }
+            else{
+                PhotonNetwork.NetworkingClient.AppVersion = match.Groups[0].Value + "-AndroidOnlyByBasedv3.2";
+            }
 
             string id = PlayerPrefs.GetString("id", null);
             string token = PlayerPrefs.GetString("token", null);
@@ -673,6 +694,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         patchesMenu.SetActive(false);
+        statsMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(mainMenuSelected);
     }
@@ -689,6 +711,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         privatePrompt.SetActive(false);
         updateBox.SetActive(false);
         patchesMenu.SetActive(false);
+        statsMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(mainMenuSelected);
 
@@ -705,6 +728,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         patchesMenu.SetActive(false);
+        statsMenu.SetActive(false);
 
         foreach (RoomIcon room in currentRooms.Values)
             room.UpdateUI(room.room);
@@ -723,6 +747,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         patchesMenu.SetActive(false);
+        statsMenu.SetActive(false);
 
         privateToggle.isOn = false;
 
@@ -740,6 +765,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         patchesMenu.SetActive(false);
+        statsMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(optionsSelected);
     }
@@ -755,6 +781,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         patchesMenu.SetActive(false);
+        statsMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(controlsSelected);
     }
@@ -770,6 +797,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(true);
         privatePrompt.SetActive(false);
         patchesMenu.SetActive(false);
+        statsMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(creditsSelected);
     }
@@ -785,6 +813,23 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         patchesMenu.SetActive(true);
+        statsMenu.SetActive(false);
+
+        EventSystem.current.SetSelectedGameObject(creditsSelected);
+    }
+    public void openStats(){
+        title.SetActive(false);
+        bg.SetActive(true);
+        mainMenu.SetActive(false);
+        optionsMenu.SetActive(false);
+        controlsMenu.SetActive(false);
+        lobbyMenu.SetActive(false);
+        createLobbyPrompt.SetActive(false);
+        inLobbyMenu.SetActive(false);
+        creditsMenu.SetActive(false);
+        privatePrompt.SetActive(false);
+        patchesMenu.SetActive(false);
+        statsMenu.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(creditsSelected);
     }
@@ -800,6 +845,7 @@ public class MainMenuManager : MonoBehaviour, ILobbyCallbacks, IInRoomCallbacks,
         creditsMenu.SetActive(false);
         privatePrompt.SetActive(false);
         patchesMenu.SetActive(false);
+        statsMenu.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(currentLobbySelected);
     }

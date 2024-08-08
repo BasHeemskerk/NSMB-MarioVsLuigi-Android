@@ -186,6 +186,11 @@ public class BobombWalk : HoldableEntity {
     [PunRPC]
     public override void Kill() {
         Light();
+        if (photonView.IsMine){
+            PlayerPrefs.SetInt("killedEnemys", PlayerPrefs.GetInt("killedEnemys", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("Killed a bobomb");
+        }
     }
 
     [PunRPC]

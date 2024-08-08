@@ -337,6 +337,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
     public void FixedUpdate() {
         //game ended, freeze.
 
+        giveOtherPlayerSomeTime();
+
         if (!GameManager.Instance.musicEnabled) {
             models.SetActive(false);
             return;
@@ -457,6 +459,8 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         //giant stomp: 400ms
     }
 
+    public string lastHitPlayer;
+
     private ContactPoint2D[] contacts = new ContactPoint2D[0];
     public void OnCollisionStay2D(Collision2D collision) {
         if (!photonView.IsMine || (knockback && !fireballKnockback) || Frozen)
@@ -481,6 +485,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 GameObject otherObj = collision.gameObject;
                 PlayerController other = otherObj.GetComponent<PlayerController>();
                 PhotonView otherView = other.photonView;
+
+                lastHitPlayer = otherView.Owner.NickName;
+                startPlayerRememberCounter = true;
 
                 if (other.invincible > 0) {
                     // They are invincible. let them decide if they've hit us.
@@ -709,7 +716,18 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 return;
             photonView.RPC(nameof(Death), RpcTarget.All, false, obj.CompareTag("lava"));
             do_vibrate(300);  // Lava or poison hit
+            //PlayerPrefs.SetInt("deaths", PlayerPrefs.GetInt("deaths", 0) + 1);
+            //PlayerPrefs.Save();
+            Debug.Log("Died in lava or poison");
             return;
+        }
+        case "bigstar": {
+            if (photonView.IsMine){
+                PlayerPrefs.SetInt("collectedStars", PlayerPrefs.GetInt("collectedStars", 0) + 1);
+                PlayerPrefs.Save();
+                Debug.Log("Collected a big star");
+            }
+            break;
         }
         }
 
@@ -746,6 +764,11 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         case "bigstar": {
             Transform parent = obj.transform.parent;
             photonView.RPC(nameof(AttemptCollectBigStar), RpcTarget.AllViaServer, parent.gameObject.GetPhotonView().ViewID);
+            /*if (photonView.IsMine){
+                PlayerPrefs.SetInt("collectedStars", PlayerPrefs.GetInt("collectedStars", 0) + 1);
+                PlayerPrefs.Save();
+                Debug.Log("Collected a big star");
+            }*/
             break;
         }
         case "loosecoin": {
@@ -755,6 +778,11 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         }
         case "coin": {
             photonView.RPC(nameof(AttemptCollectCoin), RpcTarget.AllViaServer, obj.GetPhotonView().ViewID, new Vector2(obj.transform.position.x, collider.transform.position.y));
+            /*if (photonView.IsMine){
+                PlayerPrefs.SetInt("collectedCoins", PlayerPrefs.GetInt("collectedCoins", 0) + 1);
+                PlayerPrefs.Save();
+                Debug.Log("Collected a coin");
+            }*/
             break;
         }
         }
@@ -984,6 +1012,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             PlaySoundEverywhere(powerup.soundEffect);
             soundPlayed = true;
 
+            if (photonView.IsMine){
+                PlayerPrefs.SetInt("collectedMegaMushrooms", PlayerPrefs.GetInt("collectedMegaMushrooms", 0) + 1);
+                PlayerPrefs.Save();
+                Debug.Log("Collected a mega mushroom");
+            }
+
         } else if (powerup.prefab == "Star") {
             //starman
             if (invincible <= 0)
@@ -1000,6 +1034,12 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
             if (view.IsMine)
                 PhotonNetwork.Destroy(view);
             Destroy(view.gameObject);
+
+            if (photonView.IsMine){
+                PlayerPrefs.SetInt("collectedStarsPowerup", PlayerPrefs.GetInt("collectedStarsPowerup", 0) + 1);
+                PlayerPrefs.Save();
+                Debug.Log("Collected a star powerup");
+            }
 
             return;
         } else if (powerup.prefab == "1-Up") {
@@ -1019,6 +1059,34 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 reserve = true;
             }
         }
+
+        //collect the powerup and write to playerprefs
+        if (powerup.prefab == "Mushroom"){
+            PlayerPrefs.SetInt("collectedMushrooms", PlayerPrefs.GetInt("collectedMushrooms", 0) + 1);
+        }
+        else if (powerup.prefab == "MiniMushroom"){
+            PlayerPrefs.SetInt("collectedMiniMushrooms", PlayerPrefs.GetInt("collectedMiniMushrooms", 0) + 1);
+        }
+        else if (powerup.prefab == "MegaMushroom"){
+            PlayerPrefs.SetInt("collectedMegaMushrooms", PlayerPrefs.GetInt("collectedMegaMushrooms", 0) + 1);
+        }
+        else if (powerup.prefab == "PropellerMushroom"){
+            PlayerPrefs.SetInt("collectedHelicoMushrooms", PlayerPrefs.GetInt("collectedHelicoMushrooms", 0) + 1);
+        }
+        else if (powerup.prefab == "FireFlower"){
+            PlayerPrefs.SetInt("collectedFireFlowers", PlayerPrefs.GetInt("collectedFireFlowers", 0) + 1);
+        }
+        else if (powerup.prefab == "IceFlower"){
+            PlayerPrefs.SetInt("collectedIceFlowers", PlayerPrefs.GetInt("collectedIceFlowers", 0) + 1);
+        }
+        else if (powerup.prefab == "BlueShell"){
+            PlayerPrefs.SetInt("collectedBlueShells", PlayerPrefs.GetInt("collectedBlueShells", 0) + 1);
+        }
+        else if (powerup.prefab == "Star"){
+            PlayerPrefs.SetInt("collectedStarsPowerup", PlayerPrefs.GetInt("collectedStarsPowerup", 0) + 1);
+        }
+        PlayerPrefs.Save();
+
 
         if (reserve) {
             if (storedPowerup == null || (storedPowerup != null && Enums.PowerupStatePriority[storedPowerup.state].statePriority <= pp.statePriority && !(state == Enums.PowerupState.Mushroom && newState != Enums.PowerupState.Mushroom))) {
@@ -1249,6 +1317,9 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
                 //loose coin, just destroy
                 PhotonNetwork.Destroy(coin);
             }
+            PlayerPrefs.SetInt("collectedCoins", PlayerPrefs.GetInt("collectedCoins", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("Collected a coin");
         }
 
         Instantiate(Resources.Load("Prefabs/Particle/CoinCollect"), position, Quaternion.identity);
@@ -1373,9 +1444,35 @@ public class PlayerController : MonoBehaviourPun, IFreezableEntity, ICustomSeria
         }
         holdingOld = null;
 
-        if (photonView.IsMine)
+        if (photonView.IsMine){
             ScoreboardUpdater.instance.OnDeathToggle();
             do_vibrate(500);
+            PlayerPrefs.SetFloat("deaths", PlayerPrefs.GetFloat("deaths", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("Died");
+        }
+
+        if (lastHitPlayer != null){
+            PlayerPrefs.SetFloat("kills", PlayerPrefs.GetFloat("kills", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("Killed a player (atleast, we think so)");
+        }
+    }
+
+    float timeBetweenhit;
+    float maxTimeBetweenHits = 1.5f;
+    bool startPlayerRememberCounter = false;
+
+    void giveOtherPlayerSomeTime(){
+        if (startPlayerRememberCounter){
+            if (maxTimeBetweenHits > timeBetweenhit){
+                timeBetweenhit += Time.deltaTime;
+            } else {
+                startPlayerRememberCounter = false;
+                timeBetweenhit = 0;
+                lastHitPlayer = null;
+            }
+        }
     }
 
     [PunRPC]

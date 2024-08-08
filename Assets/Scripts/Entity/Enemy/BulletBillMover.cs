@@ -92,6 +92,11 @@ public class BulletBillMover : KillableEntity {
     [PunRPC]
     public override void Kill() {
         SpecialKill(!left, false, 0);
+        if (photonView.IsMine){
+            PlayerPrefs.SetInt("killedEnemys", PlayerPrefs.GetInt("killedEnemys", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("Killed a bullet bill");
+        }
     }
 
     [PunRPC]

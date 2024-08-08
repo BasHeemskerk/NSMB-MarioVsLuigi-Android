@@ -589,12 +589,27 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
         }
     }
 
+    bool cantSaveLossesAgain = false;
+
     private IEnumerator EndGame(Player winner) {
         PhotonNetwork.CurrentRoom.SetCustomProperties(new() { [Enums.NetRoomProperties.GameStarted] = false });
         gameover = true;
         music.Stop();
         GameObject text = GameObject.FindWithTag("wintext");
         text.GetComponent<TMP_Text>().text = winner != null ? $"{ winner.GetUniqueNickname() } Wins!" : "It's a draw...";
+        if (winner.GetUniqueNickname() == PlayerPrefs.GetString("Nickname")) {
+            PlayerPrefs.SetFloat("wins", PlayerPrefs.GetFloat("wins", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("You won!");
+        }
+        else {
+            if (!cantSaveLossesAgain) {
+                PlayerPrefs.SetFloat("losses", PlayerPrefs.GetFloat("losses", 0) + 1);
+                PlayerPrefs.Save();
+                Debug.Log("You lost!");
+                cantSaveLossesAgain = true;
+            }
+        }
 
         yield return new WaitForSecondsRealtime(1);
         text.GetComponent<Animator>().SetTrigger("start");
@@ -757,6 +772,12 @@ public class GameManager : MonoBehaviour, IOnEventCallback, IInRoomCallbacks, IC
 
             return;
         }
+
+        /*if (winningPlayers.playerId == PlayerController.localPlayer.playerId){
+            PlayerPrefs.SetFloat("wins", PlayerPrefs.GetFloat("wins", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("You won!");
+        }*/
     }
 
     private void PlaySong(Enums.MusicState state, MusicData musicToPlay) {

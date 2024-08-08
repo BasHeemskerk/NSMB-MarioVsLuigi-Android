@@ -23,8 +23,8 @@ public static class Enums {
         [PowerupState.Mushroom] = new(1),
         [PowerupState.FireFlower] = new(2),
         [PowerupState.IceFlower] = new(2),
-        [PowerupState.PropellerMushroom] = new(3),
-        [PowerupState.BlueShell] = new(3),
+        [PowerupState.PropellerMushroom] = new(2),
+        [PowerupState.BlueShell] = new(2),
         [PowerupState.MegaMushroom] = new(4),
     };
     public enum PowerupState : byte {

@@ -191,6 +191,12 @@ public abstract class KillableEntity : MonoBehaviourPun, IFreezableEntity, ICust
             PhotonNetwork.InstantiateRoomObject("Prefabs/LooseCoin", body.position + Vector2.up * 0.5f, Quaternion.identity);
 
         body.velocity = new(2f * (right ? 1 : -1), 2.5f);
+
+        if (photonView.IsMine){
+            PlayerPrefs.SetInt("killedEnemys", PlayerPrefs.GetInt("killedEnemys", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("Killed a enemey, but which one?");
+        }
     }
 
     [PunRPC]

@@ -365,6 +365,11 @@ public class KoopaWalk : HoldableEntity {
     [PunRPC]
     public override void Kill() {
         EnterShell();
+        if (photonView.IsMine){
+            PlayerPrefs.SetInt("killedEnemys", PlayerPrefs.GetInt("killedEnemys", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("Killed a koopa");
+        }
     }
 
     [PunRPC]
@@ -373,6 +378,12 @@ public class KoopaWalk : HoldableEntity {
         shell = true;
         if (holder)
             holder.photonView.RPC("SetHolding", RpcTarget.All, -1);
+
+        if (photonView.IsMine){
+            PlayerPrefs.SetInt("killedEnemys", PlayerPrefs.GetInt("killedEnemys", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("Whooped this koopa");
+        }
 
         holder = null;
     }

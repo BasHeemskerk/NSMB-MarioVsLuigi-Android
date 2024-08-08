@@ -48,5 +48,10 @@ public class GoombaWalk : KillableEntity {
         deathTimer = 0.5f;
         hitbox.enabled = false;
         animator.SetBool("dead", true);
+        if (photonView.IsMine){
+            PlayerPrefs.SetInt("killedEnemys", PlayerPrefs.GetInt("killedEnemys", 0) + 1);
+            PlayerPrefs.Save();
+            Debug.Log("Killed a goomba");
+        }
     }
 }
