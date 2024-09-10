@@ -7,7 +7,6 @@ An adaptation of [MarioVsLuigi](https://github.com/ipodtouch0218/NSMB-MarioVsLui
 - Touch screen adapted controls.
 - Chat not being absolutely disfunctional.
 - Compatible from Android 5.1 to Android 14 
-- The ability to disable touch controls at will.
 
 <details>
   <summary><h2>Credits for the base Project</h2></summary>
